@@ -1,0 +1,333 @@
+--[[ =====================================================
+     young0x | LOADER
+     ===================================================== ]]
+
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+-- ============================================================
+-- 📚 TUS SCRIPTS
+-- ============================================================
+local SCRIPTS = {
+    {
+        nombre = "young0x block spin",
+        id_jugadores = "01",
+        imagen = "rbxassetid://95578345941578",
+        url = "https://raw.githubusercontent.com/thiagobanchero2-web/Young0x-block_spin/refs/heads/main/young0x.lua.blockspin.txt"
+    },
+    {
+        nombre = "young0x bike universe",
+        id_jugadores = "02",
+        imagen = "rbxassetid://91209690885550",
+        url = "https://raw.githubusercontent.com/thiagobanchero2-web/Young0x.Bike-Universe-/refs/heads/main/young0x.bike.universe.txt"
+    },
+    {
+        nombre = "young0x calles de bqm",
+        id_jugadores = "03",
+        imagen = "rbxassetid://79454562874979",
+        url = "https://raw.githubusercontent.com/thiagobanchero2-web/Young0x-block_spin/refs/heads/main/young0x.lua.blockspin.txt"
+    }
+}
+
+-- ============================================================
+-- 🎨 CREACIÓN DE LA INTERFAZ (Estilo RYSHUB)
+-- ============================================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "young0x_Loader"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+pcall(function() ScreenGui.Parent = CoreGui end)
+if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
+
+-- Botón flotante
+local OpenBtn = Instance.new("TextButton")
+OpenBtn.Size = UDim2.new(0, 120, 0, 40)
+OpenBtn.Position = UDim2.new(0, 20, 0, 20)
+OpenBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+OpenBtn.Text = "young0x"
+OpenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenBtn.Font = Enum.Font.GothamBold
+OpenBtn.TextSize = 16
+OpenBtn.BorderSizePixel = 0
+OpenBtn.Active = true
+OpenBtn.Draggable = true
+OpenBtn.Parent = ScreenGui
+Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 6)
+
+-- Ventana Principal (Se abre automáticamente)
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 680, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -340, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BorderSizePixel = 0
+MainFrame.Visible = true
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 6)
+
+-- Borde rojo superior
+local TopBorder = Instance.new("Frame")
+TopBorder.Size = UDim2.new(1, 0, 0, 3)
+TopBorder.BackgroundColor3 = Color3.fromRGB(255, 40, 40)
+TopBorder.BorderSizePixel = 0
+TopBorder.Parent = MainFrame
+Instance.new("UICorner", TopBorder).CornerRadius = UDim.new(0, 6)
+
+-- Texto de Título (young0x)
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(0, 200, 0, 50)
+Title.Position = UDim2.new(0, 20, 0, 10)
+Title.BackgroundTransparency = 1
+Title.Text = "young0x"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 20
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = MainFrame
+
+-- Texto de Versión
+local Version = Instance.new("TextLabel")
+Version.Size = UDim2.new(0, 100, 0, 50)
+Version.Position = UDim2.new(1, -150, 0, 10)
+Version.BackgroundTransparency = 1
+Version.Text = "LOADER V1.0"
+Version.TextColor3 = Color3.fromRGB(100, 100, 100)
+Version.Font = Enum.Font.GothamBold
+Version.TextSize = 12
+Version.TextXAlignment = Enum.TextXAlignment.Right
+Version.Parent = MainFrame
+
+-- Botón Cerrar (X)
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -45, 0, 15)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 14
+CloseBtn.BorderSizePixel = 0
+CloseBtn.Parent = MainFrame
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 4)
+
+-- Línea separadora de título
+local TitleSep = Instance.new("Frame")
+TitleSep.Size = UDim2.new(1, -40, 0, 1)
+TitleSep.Position = UDim2.new(0, 20, 0, 60)
+TitleSep.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+TitleSep.BorderSizePixel = 0
+TitleSep.Parent = MainFrame
+
+-- Contenedor con Scroll para las tarjetas
+local ScrollFrame = Instance.new("ScrollingFrame")
+ScrollFrame.Size = UDim2.new(1, -40, 1, -130)
+ScrollFrame.Position = UDim2.new(0, 20, 0, 70)
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.BorderSizePixel = 0
+ScrollFrame.ScrollBarThickness = 3
+ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 40, 40)
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+ScrollFrame.Parent = MainFrame
+
+local GridLayout = Instance.new("UIGridLayout")
+GridLayout.CellSize = UDim2.new(0, 200, 0, 130)
+GridLayout.CellPadding = UDim2.new(0, 10, 0, 10)
+GridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+GridLayout.Parent = ScrollFrame
+
+-- Barra inferior
+local BottomBar = Instance.new("Frame")
+BottomBar.Size = UDim2.new(1, 0, 0, 40)
+BottomBar.Position = UDim2.new(0, 0, 1, -40)
+BottomBar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+BottomBar.BorderSizePixel = 0
+BottomBar.Parent = MainFrame
+Instance.new("UICorner", BottomBar).CornerRadius = UDim.new(0, 6)
+
+local ScrollTxt = Instance.new("TextLabel")
+ScrollTxt.Size = UDim2.new(0, 100, 1, 0)
+ScrollTxt.Position = UDim2.new(0, 15, 0, 0)
+ScrollTxt.BackgroundTransparency = 1
+ScrollTxt.Text = "SCROLL"
+ScrollTxt.TextColor3 = Color3.fromRGB(100, 100, 100)
+ScrollTxt.Font = Enum.Font.GothamBold
+ScrollTxt.TextSize = 11
+ScrollTxt.TextXAlignment = Enum.TextXAlignment.Left
+ScrollTxt.Parent = BottomBar
+
+-- Indicador Online
+local OnlineDot = Instance.new("Frame")
+OnlineDot.Size = UDim2.new(0, 8, 0, 8)
+OnlineDot.Position = UDim2.new(1, -110, 0.5, -4)
+OnlineDot.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+OnlineDot.BorderSizePixel = 0
+OnlineDot.Parent = BottomBar
+Instance.new("UICorner", OnlineDot).CornerRadius = UDim.new(1, 0)
+
+local OnlineTxt = Instance.new("TextLabel")
+OnlineTxt.Size = UDim2.new(0, 80, 1, 0)
+OnlineTxt.Position = UDim2.new(1, -95, 0, 0)
+OnlineTxt.BackgroundTransparency = 1
+OnlineTxt.Text = "ONLINE"
+OnlineTxt.TextColor3 = Color3.fromRGB(150, 150, 150)
+OnlineTxt.Font = Enum.Font.GothamBold
+OnlineTxt.TextSize = 11
+OnlineTxt.TextXAlignment = Enum.TextXAlignment.Left
+OnlineTxt.Parent = BottomBar
+
+-- ============================================================
+-- ⚙️ LÓGICA DE ABRIR/CERRAR
+-- ============================================================
+local isOpen = true
+local function toggleUI()
+    isOpen = not isOpen
+    if isOpen then
+        MainFrame.Visible = true
+        MainFrame.Size = UDim2.new(0, 680, 0, 0)
+        TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 680, 0, 420)
+        }):Play()
+    else
+        local tween = TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 680, 0, 0)
+        })
+        tween:Play()
+        tween.Completed:Connect(function()
+            if not isOpen then MainFrame.Visible = false end
+        end)
+    end
+end
+
+-- ============================================================
+-- 🎴 CREACIÓN DE LA TARJETA
+-- ============================================================
+local function crearTarjeta(datos, index)
+    local Card = Instance.new("TextButton")
+    Card.Size = UDim2.new(0, 200, 0, 130)
+    Card.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    Card.BorderSizePixel = 0
+    Card.Text = ""
+    Card.AutoButtonColor = false
+    Card.LayoutOrder = index
+    Card.Parent = ScrollFrame
+    Instance.new("UICorner", Card).CornerRadius = UDim.new(0, 6)
+
+    -- Imagen de fondo
+    local BgImage = Instance.new("ImageLabel")
+    BgImage.Size = UDim2.new(1, 0, 1, 0)
+    BgImage.BackgroundTransparency = 1
+    BgImage.Image = datos.imagen
+    BgImage.ScaleType = Enum.ScaleType.Crop
+    BgImage.Parent = Card
+    Instance.new("UICorner", BgImage).CornerRadius = UDim.new(0, 6)
+
+    -- Degradado oscuro
+    local Gradient = Instance.new("Frame")
+    Gradient.Size = UDim2.new(1, 0, 0.6, 0)
+    Gradient.Position = UDim2.new(0, 0, 0.4, 0)
+    Gradient.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    Gradient.BackgroundTransparency = 0.2
+    Gradient.BorderSizePixel = 0
+    Gradient.Parent = Card
+    Instance.new("UICorner", Gradient).CornerRadius = UDim.new(0, 6)
+
+    -- Etiqueta AVAILABLE
+    local AvailFrame = Instance.new("Frame")
+    AvailFrame.Size = UDim2.new(0, 80, 0, 20)
+    AvailFrame.Position = UDim2.new(0, 8, 0, 8)
+    AvailFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    AvailFrame.BackgroundTransparency = 0.3
+    AvailFrame.BorderSizePixel = 0
+    AvailFrame.Parent = Card
+    Instance.new("UICorner", AvailFrame).CornerRadius = UDim.new(0, 4)
+
+    local GreenDot = Instance.new("Frame")
+    GreenDot.Size = UDim2.new(0, 6, 0, 6)
+    GreenDot.Position = UDim2.new(0, 6, 0.5, -3)
+    GreenDot.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+    GreenDot.BorderSizePixel = 0
+    GreenDot.Parent = AvailFrame
+    Instance.new("UICorner", GreenDot).CornerRadius = UDim.new(1, 0)
+
+    local AvailTxt = Instance.new("TextLabel")
+    AvailTxt.Size = UDim2.new(1, -15, 1, 0)
+    AvailTxt.Position = UDim2.new(0, 15, 0, 0)
+    AvailTxt.BackgroundTransparency = 1
+    AvailTxt.Text = "AVAILABLE"
+    AvailTxt.TextColor3 = Color3.fromRGB(255, 255, 255)
+    AvailTxt.Font = Enum.Font.GothamBold
+    AvailTxt.TextSize = 9
+    AvailTxt.TextXAlignment = Enum.TextXAlignment.Left
+    AvailTxt.Parent = AvailFrame
+
+    -- ID / Jugadores
+    local IdTxt = Instance.new("TextLabel")
+    IdTxt.Size = UDim2.new(0, 30, 0, 20)
+    IdTxt.Position = UDim2.new(1, -35, 0, 8)
+    IdTxt.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    IdTxt.BackgroundTransparency = 0.3
+    IdTxt.Text = datos.id_jugadores
+    IdTxt.TextColor3 = Color3.fromRGB(200, 200, 200)
+    IdTxt.Font = Enum.Font.GothamBold
+    IdTxt.TextSize = 10
+    IdTxt.BorderSizePixel = 0
+    IdTxt.Parent = Card
+    Instance.new("UICorner", IdTxt).CornerRadius = UDim.new(0, 4)
+
+    -- Título del Script
+    local NameTxt = Instance.new("TextLabel")
+    NameTxt.Size = UDim2.new(1, -10, 0, 20)
+    NameTxt.Position = UDim2.new(0, 8, 0, 55)
+    NameTxt.BackgroundTransparency = 1
+    NameTxt.Text = datos.nombre
+    NameTxt.TextColor3 = Color3.fromRGB(255, 255, 255)
+    NameTxt.Font = Enum.Font.GothamBold
+    NameTxt.TextSize = 10
+    NameTxt.TextXAlignment = Enum.TextXAlignment.Left
+    NameTxt.TextTruncate = Enum.TextTruncate.AtEnd
+    NameTxt.Parent = Card
+
+    -- Botón EXECUTE
+    local ExecBtn = Instance.new("TextButton")
+    ExecBtn.Size = UDim2.new(1, -16, 0, 26)
+    ExecBtn.Position = UDim2.new(0, 8, 1, -34)
+    ExecBtn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+    ExecBtn.Text = "▶ EXECUTE"
+    ExecBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ExecBtn.Font = Enum.Font.GothamBold
+    ExecBtn.TextSize = 11
+    ExecBtn.BorderSizePixel = 0
+    ExecBtn.Parent = Card
+    Instance.new("UICorner", ExecBtn).CornerRadius = UDim.new(0, 4)
+
+    -- Lógica de ejecución
+    ExecBtn.MouseButton1Click:Connect(function()
+        -- Destruye absolutamente todo el loader (ventana, botón flotante, etc)
+        ScreenGui:Destroy()
+
+        -- Ejecuta el script en segundo plano
+        task.spawn(function()
+            local success, err = pcall(function()
+                loadstring(game:HttpGet(datos.url))()
+            end)
+            
+            if not success then
+                warn("Error al cargar " .. datos.nombre .. ": " .. tostring(err))
+            end
+        end)
+    end)
+end
+
+-- Generar las tarjetas
+for i, scriptData in ipairs(SCRIPTS) do
+    crearTarjeta(scriptData, i)
+end
+
+OpenBtn.MouseButton1Click:Connect(toggleUI)
+CloseBtn.MouseButton1Click:Connect(toggleUI)
+
+print("[young0x] Loader cargado y abierto automáticamente.")
